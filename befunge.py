@@ -89,10 +89,10 @@ class BefungeInterpreter:
         self.stack.pop()
             
     def pop_int(self):
-        return int(self.stack.pop())
+        return self.stack.pop()
 
     def pop_ascii(self):
-        return str(unichr(self.stack.pop())) 
+        return chr(self.stack.pop()) 
 
     def skip(self):
         self.move()
@@ -100,7 +100,7 @@ class BefungeInterpreter:
     def put(self):
         y = self.stack.pop()
         x = self.stack.pop()
-        self.matrix[y][x] = str(unichr(self.stack.pop())) 
+        self.matrix[y][x] = chr(self.stack.pop()) 
 
     def get(self):
         y = self.stack.pop()
@@ -163,12 +163,12 @@ class BefungeInterpreter:
         self.matrix.extend(input.split('\n'))
         while(not(self.finished)):
             op  = self.matrix[self.y][self.x] 
-            if self.mode == Mode.NORMAL:
+            if self.mode == Mode.NORMAL or op == '"':
                 func = self.funcs[op]
                 ret = func()
-                if str(ret) != 'None': result += str(ret)  
+                if ret is not None: result += str(ret)  
             else:
-                self.stack.append(op)
+                self.stack.append(ord(op))
             self.move()
         return result
 if __name__ == "__main__":
